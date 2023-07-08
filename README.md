@@ -1,1 +1,1 @@
-# EMQX API SDK
+# EMQX SDK for EMQX Broker API
