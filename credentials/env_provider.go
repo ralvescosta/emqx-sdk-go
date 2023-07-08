@@ -3,8 +3,6 @@ package credentials
 import (
 	"context"
 	"os"
-
-	"github.com/ralvescosta/emqx-sdk-go/errors"
 )
 
 type (
@@ -26,13 +24,13 @@ func (p *EnvCredentialsProvider) Retrieve(ctx context.Context) (*Credentials, er
 	if k := os.Getenv(ENV_API_KEY); k != "" {
 		c.APIKey = k
 	} else {
-		return nil, errors.ErrEnvAPIKeyNotProvided
+		return nil, ErrEnvAPIKeyNotProvided
 	}
 
 	if k := os.Getenv(ENV_SECRET_KEY); k != "" {
 		c.SecretKey = k
 	} else {
-		return nil, errors.ErrEnvSecretKeyNotProvided
+		return nil, ErrEnvSecretKeyNotProvided
 	}
 
 	return c, nil

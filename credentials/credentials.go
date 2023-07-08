@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-
-	"github.com/ralvescosta/emqx-sdk-go/errors"
 )
 
 type (
@@ -25,7 +23,7 @@ func (c *Credentials) HasKeys() bool {
 
 func (c *Credentials) Header() (string, error) {
 	if !c.HasKeys() {
-		return "", errors.ErrCredentialsNotProvided
+		return "", ErrCredentialsNotProvided
 	}
 
 	return fmt.Sprintf("Basic %v", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%v:%v", c.APIKey, c.SecretKey)))), nil

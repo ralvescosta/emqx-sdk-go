@@ -2,8 +2,6 @@ package endpoint
 
 import (
 	"os"
-
-	"github.com/ralvescosta/emqx-sdk-go/errors"
 )
 
 type (
@@ -25,7 +23,7 @@ func (r EnvEndpointResolver) ResolveEndpoint(service string) (*Endpoint, error) 
 	if k := os.Getenv(ENV_HOST); k != "" {
 		e.Host = k
 	} else {
-		return nil, errors.ErrEnvHostNotProvided
+		return nil, ErrEnvHostNotProvided
 	}
 
 	//use uri package to ensure the host was provided correctly and to use to add the other parameters
@@ -33,7 +31,7 @@ func (r EnvEndpointResolver) ResolveEndpoint(service string) (*Endpoint, error) 
 	if k := os.Getenv(ENV_API_PORT); k != "" {
 		e.Port = k
 	} else {
-		return nil, errors.ErrEnvAPIPortNotProvided
+		return nil, ErrEnvAPIPortNotProvided
 	}
 
 	return e, nil
