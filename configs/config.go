@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ralvescosta/emqx-sdk-go/credentials"
+	"github.com/ralvescosta/emqx-sdk-go/endpoint"
 	"go.uber.org/zap"
 )
 
@@ -13,9 +14,10 @@ type (
 	}
 
 	Config struct {
-		Credentials credentials.CredentialsProvider
-		HTTPClient  HTTPClient
 		Logger      *zap.SugaredLogger
+		Credentials credentials.CredentialsProvider
+		Endpoint    endpoint.EndpointResolver
+		HTTPClient  HTTPClient
 	}
 )
 
@@ -25,8 +27,9 @@ func NewConfig() *Config {
 
 func DefaultConfig() *Config {
 	return &Config{
-		Credentials: credentials.NewEnvCredentialsProvider(),
-		HTTPClient:  http.DefaultClient,
 		Logger:      zap.S().Named("emqx-sdk-go"),
+		Credentials: credentials.NewEnvCredentialsProvider(),
+		Endpoint:    endpoint.NewEnvEndpointResolver(),
+		HTTPClient:  http.DefaultClient,
 	}
 }

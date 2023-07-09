@@ -1,14 +1,16 @@
 package endpoint
 
+import "net/url"
+
 type (
 	Endpoint struct {
 		Host string
 		Port string
 		Path string
-		URL  string
+		URL  *url.URL
 	}
 
 	EndpointResolver interface {
-		ResolveEndpoint(service string) (*Endpoint, error)
+		ResolveEndpoint() (*Endpoint, error)
 	}
 )
