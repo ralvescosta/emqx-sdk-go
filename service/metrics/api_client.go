@@ -16,13 +16,14 @@ type (
 	}
 
 	MetricsClient interface{}
-	Client        struct {
-		options Options
+
+	Client struct {
+		options *Options
 	}
 )
 
 func New(options *Options) *Client {
-	return nil
+	return &Client{options}
 }
 
 func NewFromConfig(cfg *configs.Config) *Client {
