@@ -19,32 +19,32 @@ func NewEnvEndpointResolver() *EnvEndpointResolver {
 	return &EnvEndpointResolver{}
 }
 
-func (r EnvEndpointResolver) ResolveEndpoint() (*Endpoint, error) {
-	e := &Endpoint{}
+func (r EnvEndpointResolver) ResolveEndpoint() (*url.URL, error) {
+	host := ""
+	port := ""
 
 	if k := os.Getenv(ENV_HOST); k != "" {
-		e.Host = k
+		host = k
 	} else {
 		return nil, ErrEnvHostNotProvided
 	}
 
 	if k := os.Getenv(ENV_API_PORT); k != "" {
-		e.Port = k
+		port = k
 	} else {
-		if e.Host[:5] == "http:" {
-			e.Port = "80"
+		if host[:5] == "http:" {
+			port = "80"
 		}
 
-		if e.Host[:5] == "https" {
-			e.Port = "443"
+		if host[:5] == "https" {
+			port = "443"
 		}
 	}
 
-	u, err := url.Parse(fmt.Sprintf("%v:%v", e.Host, e.Port))
+	u, err := url.Parse(fmt.Sprintf("%v:%v", host, port))
 	if err != nil {
 		return nil, err
 	}
 
-	e.URL = u
-	return e, nil
+	return u, nil
 }
