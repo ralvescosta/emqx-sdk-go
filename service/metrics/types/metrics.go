@@ -457,3 +457,38 @@ func (s *PacketsUnsubscribeSummary) Map(v map[string]interface{}) {
 func (s *PacketsPingrespSummary) Map(v map[string]interface{}) {
 	s.Sent = int(v["packets.pingresp.sent"].(float64))
 }
+
+func (s *AuthenticationSummary) Map(v map[string]interface{}) {
+	s.Success = int(v["authentication.success"].(float64))
+	s.Failure = int(v["authentication.failure"].(float64))
+	s.SuccessSummary.Map(v)
+}
+
+func (s *AuthenticationSuccessSummary) Map(v map[string]interface{}) {
+	s.Anonymous = int(v["authentication.success.anonymous"].(float64))
+}
+
+func (s *OLPSummary) Map(v map[string]interface{}) {
+	s.Hbn = int(v["olp.hbn"].(float64))
+	s.Gc = int(v["olp.gc"].(float64))
+	s.NewConn = int(v["olp.new_conn"].(float64))
+	s.DelaySummary.Map(v)
+}
+
+func (s *OLPDelaySummary) Map(v map[string]interface{}) {
+	s.Timeout = int(v["olp.delay.timeout"].(float64))
+	s.Ok = int(v["olp.delay.ok"].(float64))
+}
+
+func (s *SessionSummary) Map(v map[string]interface{}) {
+	s.Created = int(v["session.created"].(float64))
+	s.Discarded = int(v["session.discarded"].(float64))
+	s.Resumed = int(v["session.resumed"].(float64))
+	s.Takenover = int(v["session.takenover"].(float64))
+	s.Terminated = int(v["session.terminated"].(float64))
+}
+
+func (s *BytesSummary) Map(v map[string]interface{}) {
+	s.Received = int(v["bytes.received"].(float64))
+	s.Sent = int(v["bytes.sent"].(float64))
+}
