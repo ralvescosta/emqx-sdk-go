@@ -45,6 +45,7 @@ func NewFromConfig(cfg *configs.Config) *Client {
 func (c *Client) perform(ctx context.Context, path string, queryParams *url.Values, resBody interface{}) error {
 	u, err := c.options.Endpoint.ResolveEndpoint()
 	if err != nil {
+		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", path))
 		return err
 	}
 
@@ -55,16 +56,19 @@ func (c *Client) perform(ctx context.Context, path string, queryParams *url.Valu
 
 	credentials, err := c.options.Credentials.Retrieve(ctx)
 	if err != nil {
+		c.options.Logger.Errorw("failure to retrieve the api credentials", zap.Error(err))
 		return err
 	}
 
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
 	if err != nil {
+		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", path))
 		return err
 	}
 
 	secHeader, err := credentials.Header()
 	if err != nil {
+		c.options.Logger.Errorw("failure to create http headers for authentication", zap.Error(err))
 		return err
 	}
 
@@ -73,12 +77,14 @@ func (c *Client) perform(ctx context.Context, path string, queryParams *url.Valu
 
 	resp, err := c.options.HTTPClient.Do(req)
 	if err != nil {
+		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", path))
 		return err
 	}
 	defer resp.Body.Close()
 
 	json.NewDecoder(resp.Body).Decode(&resBody)
 	if err != nil {
+		c.options.Logger.Errorw("failure to unmarshal json", zap.Error(err))
 		return err
 	}
 
