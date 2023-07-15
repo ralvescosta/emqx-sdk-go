@@ -13,7 +13,8 @@ func GetMetrics() {
 	client := metrics.NewFromConfig(configs.DefaultConfig())
 
 	ctx := context.Background()
-	res, err := client.GetMetrics(ctx)
+
+	res, err := client.GetMetrics(ctx, nil)
 	if err != nil {
 		panic(err)
 	}
