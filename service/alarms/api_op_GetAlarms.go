@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -15,7 +16,7 @@ func (c *Client) GetAlarms(ctx context.Context, page, limit int, activated *bool
 		return nil, errors.New("limit must be grater than 0")
 	}
 
-	urlPath := "/api/v5/metrics"
+	urlPath := "/api/v5/alarms"
 	query := &url.Values{}
 
 	query.Add("page", fmt.Sprintf("%v", page))
@@ -27,7 +28,7 @@ func (c *Client) GetAlarms(ctx context.Context, page, limit int, activated *bool
 
 	body := []*types.AlarmsResponse{}
 
-	err := c.perform(ctx, urlPath, query, body)
+	err := c.perform(ctx, urlPath, http.MethodGet, query, body)
 	if err != nil {
 		return nil, err
 	}

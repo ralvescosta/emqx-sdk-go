@@ -42,7 +42,7 @@ func NewFromConfig(cfg *configs.Config) *Client {
 	return New(opts)
 }
 
-func (c *Client) perform(ctx context.Context, path string, queryParams *url.Values, resBody interface{}) error {
+func (c *Client) perform(ctx context.Context, path, method string, queryParams *url.Values, resBody interface{}) error {
 	u, err := c.options.Endpoint.ResolveEndpoint()
 	if err != nil {
 		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", path))
@@ -60,7 +60,7 @@ func (c *Client) perform(ctx context.Context, path string, queryParams *url.Valu
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
+	req, err := http.NewRequest(method, u.String(), nil)
 	if err != nil {
 		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", path))
 		return err
