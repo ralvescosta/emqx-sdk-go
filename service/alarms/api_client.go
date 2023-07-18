@@ -3,6 +3,7 @@ package alarms
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
@@ -80,7 +81,13 @@ func (c *Client) perform(ctx context.Context, path, method string, queryParams *
 		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", path))
 		return err
 	}
+
 	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		c.options.Logger.Errorw("http request error", zap.String("statusCode", resp.Status))
+		return errors.New("something went wrong")
+	}
 
 	json.NewDecoder(resp.Body).Decode(&resBody)
 	if err != nil {
