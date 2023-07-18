@@ -3,7 +3,7 @@
 ## HTTP Clients
 
 - [Metrics](https://github.com/ralvescosta/emqx-sdk-go/tree/main/examples/metrics)
-- Alarms
+- [Alarms](https://github.com/ralvescosta/emqx-sdk-go/tree/main/examples/alarms)
 - Authentication
 - Authorization
 - Clients
