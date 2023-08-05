@@ -10,6 +10,7 @@ import (
 	"github.com/ralvescosta/emqx-sdk-go/configs"
 	"github.com/ralvescosta/emqx-sdk-go/credentials"
 	"github.com/ralvescosta/emqx-sdk-go/endpoint"
+	"github.com/ralvescosta/emqx-sdk-go/service/alarms/types"
 	"go.uber.org/zap"
 )
 
@@ -21,7 +22,10 @@ type (
 		HTTPClient  configs.HTTPClient
 	}
 
-	MetricsClient interface{}
+	MetricsClient interface {
+		DeleteAlarms(ctx context.Context) error
+		GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
+	}
 
 	Client struct {
 		options *Options

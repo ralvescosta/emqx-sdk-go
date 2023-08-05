@@ -9,6 +9,7 @@ import (
 	"github.com/ralvescosta/emqx-sdk-go/configs"
 	"github.com/ralvescosta/emqx-sdk-go/credentials"
 	"github.com/ralvescosta/emqx-sdk-go/endpoint"
+	"github.com/ralvescosta/emqx-sdk-go/service/metrics/types"
 	"go.uber.org/zap"
 )
 
@@ -20,7 +21,14 @@ type (
 		HTTPClient  configs.HTTPClient
 	}
 
-	MetricsClient interface{}
+	MetricsClient interface {
+		GetMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error)
+		GetMonitor(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error)
+		GetMonitorCurrent(ctx context.Context) (*types.MonitorCurrentResponse, error)
+		GetMonitorCurrentNode(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error)
+		GetMonitorNodes(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error)
+		GetStats(ctx context.Context, aggregateQueryParam bool) ([]*types.StatsResponse, error)
+	}
 
 	Client struct {
 		options *Options
