@@ -22,7 +22,7 @@ type (
 		HTTPClient  configs.HTTPClient
 	}
 
-	MetricsClient interface {
+	AlarmsClient interface {
 		DeleteAlarms(ctx context.Context) error
 		GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
 	}
