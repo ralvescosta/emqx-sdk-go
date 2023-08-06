@@ -3,6 +3,7 @@ package metrics
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
@@ -89,6 +90,11 @@ func (c *Client) perform(ctx context.Context, path string, queryParams *url.Valu
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		c.options.Logger.Errorw("http request error", zap.Int("statusCode", resp.StatusCode))
+		return errors.New(resp.Status)
+	}
 
 	json.NewDecoder(resp.Body).Decode(&resBody)
 	if err != nil {

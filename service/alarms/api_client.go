@@ -89,8 +89,8 @@ func (c *Client) perform(ctx context.Context, path, method string, queryParams *
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		c.options.Logger.Errorw("http request error", zap.String("statusCode", resp.Status))
-		return errors.New("something went wrong")
+		c.options.Logger.Errorw("http request error", zap.Int("statusCode", resp.StatusCode))
+		return errors.New(resp.Status)
 	}
 
 	json.NewDecoder(resp.Body).Decode(&resBody)
