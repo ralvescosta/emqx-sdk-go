@@ -26,8 +26,10 @@ func NewConfig() *Config {
 }
 
 func DefaultConfig() *Config {
+	logger, _ := zap.NewProduction()
+
 	return &Config{
-		Logger:      zap.S().Named("emqx-sdk-go"),
+		Logger:      logger.Named("emqx-sdk-go").Sugar(),
 		Credentials: credentials.NewEnvCredentialsProvider(),
 		Endpoint:    endpoint.NewEnvEndpointResolver(),
 		HTTPClient:  http.DefaultClient,
