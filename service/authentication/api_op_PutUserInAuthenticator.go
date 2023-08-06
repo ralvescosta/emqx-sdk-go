@@ -6,10 +6,10 @@ import (
 	"net/http"
 )
 
-func (c *Client) DeleteAuthenticationUser(ctx context.Context, authenticatorID, userID string) error {
+func (c *Client) PutUserInAuthenticator(ctx context.Context, authenticatorID, userID string) error {
 	urlPath := fmt.Sprintf("api/v5/authentication/%s/users/%s", authenticatorID, userID)
 
-	if err := c.perform(ctx, urlPath, http.MethodDelete, nil, nil); err != nil {
+	if err := c.perform(ctx, urlPath, http.MethodPut, nil, nil); err != nil {
 		return err
 	}
 
