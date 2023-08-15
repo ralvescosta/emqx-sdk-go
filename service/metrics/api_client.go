@@ -24,11 +24,11 @@ type (
 
 	MetricsClient interface {
 		GetMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error)
-		GetMonitor(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error)
-		GetMonitorCurrent(ctx context.Context) (*types.MonitorCurrentResponse, error)
-		GetMonitorCurrentNode(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error)
-		GetMonitorNodes(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error)
 		GetStats(ctx context.Context, aggregateQueryParam bool) ([]*types.StatsResponse, error)
+		GetCurrentStatusGaugeAndRate(ctx context.Context) (*types.MonitorCurrentResponse, error)
+		GetNodeCurrentStatusGaugeAndRate(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error)
+		GetMonitorDataOnTheNode(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error)
+		GetMonitorData(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error)
 	}
 
 	Client struct {

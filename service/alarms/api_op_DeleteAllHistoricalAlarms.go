@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) DeleteAlarms(ctx context.Context) error {
+func (c *Client) DeleteAllHistoricalAlarms(ctx context.Context) error {
 	urlPath := "/api/v5/alarms"
 
 	body := ""

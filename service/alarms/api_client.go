@@ -23,7 +23,7 @@ type (
 	}
 
 	AlarmsClient interface {
-		DeleteAlarms(ctx context.Context) error
+		DeleteAllHistoricalAlarms(ctx context.Context) error
 		GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
 	}
 

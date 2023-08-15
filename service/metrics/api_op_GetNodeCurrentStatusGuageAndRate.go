@@ -8,7 +8,7 @@ import (
 	"github.com/ralvescosta/emqx-sdk-go/service/metrics/types"
 )
 
-func (c *Client) GetMonitorCurrentNode(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error) {
+func (c *Client) GetNodeCurrentStatusGaugeAndRate(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error) {
 	if nodeParam == "" {
 		return nil, errors.New("node parameter is required")
 	}
