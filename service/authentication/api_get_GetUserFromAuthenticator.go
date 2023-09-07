@@ -3,7 +3,6 @@ package authentication
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/ralvescosta/emqx-sdk-go/service/authentication/types"
 )
@@ -13,7 +12,10 @@ func (c *Client) GetUserFromAuthenticator(ctx context.Context, authenticatorID, 
 
 	body := &types.ResponseUserFromAuthenticator{}
 
-	if err := c.perform(ctx, urlPath, http.MethodGet, nil, body); err != nil {
+	if err := c.perform(
+		ctx,
+		NewRequestParams().Get(urlPath).ResBody(body),
+	); err != nil {
 		return nil, err
 	}
 

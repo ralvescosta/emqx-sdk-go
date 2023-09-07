@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -26,6 +27,15 @@ type (
 	Client struct {
 		options *Options
 	}
+
+	RequestParams struct {
+		path           string
+		method         string
+		queryParams    *url.Values
+		reqBody        io.Reader
+		reqContentType string
+		resBody        any
+	}
 )
 
 func New(options *Options) *Client {
@@ -43,16 +53,16 @@ func NewFromConfig(cfg *configs.Config) *Client {
 	return New(opts)
 }
 
-func (c *Client) perform(ctx context.Context, path, method string, queryParams *url.Values, resBody interface{}) error {
+func (c *Client) perform(ctx context.Context, params *RequestParams) error {
 	u, err := c.options.Endpoint.ResolveEndpoint()
 	if err != nil {
-		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", path))
+		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", params.path))
 		return err
 	}
 
-	u.Path = path
-	if queryParams != nil {
-		u.RawQuery = queryParams.Encode()
+	u.Path = params.path
+	if params.queryParams != nil {
+		u.RawQuery = params.queryParams.Encode()
 	}
 
 	credentials, err := c.options.Credentials.Retrieve(ctx)
@@ -61,9 +71,9 @@ func (c *Client) perform(ctx context.Context, path, method string, queryParams *
 		return err
 	}
 
-	req, err := http.NewRequest(method, u.String(), nil)
+	req, err := http.NewRequest(params.method, u.String(), params.reqBody)
 	if err != nil {
-		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", path))
+		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", params.path))
 		return err
 	}
 
@@ -73,12 +83,12 @@ func (c *Client) perform(ctx context.Context, path, method string, queryParams *
 		return err
 	}
 
-	req.Header.Set("content-type", "application/json")
+	req.Header.Set("content-type", params.reqContentType)
 	req.Header.Set("authorization", secHeader)
 
 	resp, err := c.options.HTTPClient.Do(req)
 	if err != nil {
-		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", path))
+		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", params.path))
 		return err
 	}
 
@@ -89,11 +99,61 @@ func (c *Client) perform(ctx context.Context, path, method string, queryParams *
 		return errors.New(resp.Status)
 	}
 
-	json.NewDecoder(resp.Body).Decode(&resBody)
+	json.NewDecoder(resp.Body).Decode(&params.resBody)
 	if err != nil {
 		c.options.Logger.Errorw("failure to unmarshal json", zap.Error(err))
 		return err
 	}
 
 	return nil
+}
+
+func NewRequestParams() *RequestParams {
+	return &RequestParams{
+		reqContentType: "application/json",
+	}
+}
+
+func (rp *RequestParams) Post(path string) *RequestParams {
+	rp.method = http.MethodPost
+	rp.path = path
+	return rp
+}
+
+func (rp *RequestParams) Get(path string) *RequestParams {
+	rp.method = http.MethodGet
+	rp.path = path
+	return rp
+}
+
+func (rp *RequestParams) Put(path string) *RequestParams {
+	rp.method = http.MethodPut
+	rp.path = path
+	return rp
+}
+
+func (rp *RequestParams) Delete(path string) *RequestParams {
+	rp.method = http.MethodDelete
+	rp.path = path
+	return rp
+}
+
+func (rp *RequestParams) Query(params *url.Values) *RequestParams {
+	rp.queryParams = params
+	return rp
+}
+
+func (rp *RequestParams) ReqBody(body io.Reader) *RequestParams {
+	rp.reqBody = body
+	return rp
+}
+
+func (rp *RequestParams) ReqContentType(contentType string) *RequestParams {
+	rp.reqContentType = contentType
+	return rp
+}
+
+func (rp *RequestParams) ResBody(body any) *RequestParams {
+	rp.resBody = body
+	return rp
 }
