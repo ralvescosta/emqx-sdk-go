@@ -1,6 +1,6 @@
 module github.com/ralvescosta/emqx-sdk-go
 
-go 1.20
+go 1.21
 
 require go.uber.org/zap v1.24.0
 
