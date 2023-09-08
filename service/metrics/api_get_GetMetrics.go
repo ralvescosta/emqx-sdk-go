@@ -21,7 +21,6 @@ func (c *metricsClient) GetMetrics(ctx context.Context, aggregateQueryParam *boo
 		query = nil
 	}
 
-	//urlPath, query, body
 	resp, err := c.apiClient.Perform(
 		ctx,
 		client.NewParams().Get(urlPath).Query(query),
@@ -34,6 +33,7 @@ func (c *metricsClient) GetMetrics(ctx context.Context, aggregateQueryParam *boo
 	json.NewDecoder(resp.Body).Decode(&body)
 	if err != nil {
 		c.logger.Errorw("failure to unmarshal json", zap.Error(err))
+
 		return nil, err
 	}
 

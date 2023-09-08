@@ -29,6 +29,7 @@ func (c *metricsClient) GetStats(ctx context.Context, aggregateQueryParam bool) 
 	json.NewDecoder(resp.Body).Decode(&body)
 	if err != nil {
 		c.logger.Errorw("failure to unmarshal json", zap.Error(err))
+
 		return nil, err
 	}
 

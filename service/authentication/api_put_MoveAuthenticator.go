@@ -17,6 +17,7 @@ func (c *authenticationClient) PutMoveAuthenticator(ctx context.Context, authent
 
 	if err != nil {
 		fmt.Printf("%v", err.Error())
+
 		return err
 	}
 

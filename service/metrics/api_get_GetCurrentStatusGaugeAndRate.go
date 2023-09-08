@@ -21,6 +21,7 @@ func (c *metricsClient) GetCurrentStatusGaugeAndRate(ctx context.Context) (*type
 	json.NewDecoder(resp.Body).Decode(body)
 	if err != nil {
 		c.logger.Errorw("failure to unmarshal json", zap.Error(err))
+
 		return nil, err
 	}
 

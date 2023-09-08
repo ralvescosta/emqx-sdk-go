@@ -33,6 +33,7 @@ func (c *metricsClient) GetMonitorData(ctx context.Context, latestQueryParam str
 	json.NewDecoder(resp.Body).Decode(&body)
 	if err != nil {
 		c.logger.Errorw("failure to unmarshal json", zap.Error(err))
+
 		return nil, err
 	}
 

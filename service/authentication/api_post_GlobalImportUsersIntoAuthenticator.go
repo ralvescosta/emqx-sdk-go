@@ -24,12 +24,14 @@ func (c *authenticationClient) PostGlobalImportUsersIntoAuthenticator(ctx contex
 	formFile, err := multipartWriter.CreateFormFile("filename", file.Name())
 	if err != nil {
 		c.logger.Error("error to create form file", zap.Error(err))
+
 		return err
 	}
 
 	_, err = io.Copy(formFile, file)
 	if err != nil {
 		c.logger.Error("error moving file", zap.Error(err))
+
 		return err
 	}
 
@@ -37,7 +39,6 @@ func (c *authenticationClient) PostGlobalImportUsersIntoAuthenticator(ctx contex
 		ctx,
 		client.NewParams().Post(urlPath).RequestBody(reqBody).RequestContentType(multipartWriter.FormDataContentType()),
 	)
-
 	if err != nil {
 		return err
 	}
