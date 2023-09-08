@@ -1,3 +1,3 @@
 module github.com/ralvescosta/emqx-sdk-go/examples/publish
 
-go 1.20
+go 1.21

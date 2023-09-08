@@ -1,3 +1,3 @@
 module github.com/ralvescosta/emqx-sdk-go/service/nodes
 
-go 1.20
+go 1.21

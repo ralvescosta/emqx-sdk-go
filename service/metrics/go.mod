@@ -1,6 +1,6 @@
 module github.com/ralvescosta/emqx-sdk-go/service/metrics
 
-go 1.20
+go 1.21
 
 require (
 	github.com/ralvescosta/emqx-sdk-go v0.0.0-20230710093546-4ebd6dbd24e0 // indirect

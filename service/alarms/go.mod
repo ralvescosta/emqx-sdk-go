@@ -1,6 +1,6 @@
 module github.com/ralvescosta/emqx-sdk-go/service/alarms
 
-go 1.20
+go 1.21
 
 require (
 	github.com/ralvescosta/emqx-sdk-go v0.0.0-20230715103618-634563f4e2ef
