@@ -3,14 +3,16 @@ package authentication
 import (
 	"context"
 	"fmt"
+
+	"github.com/ralvescosta/emqx-sdk-go/client"
 )
 
-func (c *Client) DeleteUserInAuthenticator(ctx context.Context, authenticatorID, userID string) error {
+func (c *authenticationClient) DeleteUserInAuthenticator(ctx context.Context, authenticatorID, userID string) error {
 	urlPath := fmt.Sprintf("api/v5/authentication/%s/users/%s", authenticatorID, userID)
 
-	if err := c.perform(
+	if _, err := c.apiClient.Perform(
 		ctx,
-		NewRequestParams().Delete(urlPath),
+		client.NewParams().Delete(urlPath),
 	); err != nil {
 		return err
 	}

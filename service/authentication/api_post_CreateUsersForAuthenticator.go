@@ -6,10 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/ralvescosta/emqx-sdk-go/client"
 	"github.com/ralvescosta/emqx-sdk-go/service/authentication/types"
+	"go.uber.org/zap"
 )
 
-func (c *Client) PostCreateUsersForAuthenticator(
+func (c *authenticationClient) PostCreateUsersForAuthenticator(
 	ctx context.Context,
 	authenticatorID string,
 	req *types.RequestCreateUserForAuthenticator,
@@ -23,14 +25,20 @@ func (c *Client) PostCreateUsersForAuthenticator(
 		return nil, err
 	}
 
-	res := &types.ResponseCreateUserForAuthenticator{}
-
-	if err := c.perform(
+	resp, err := c.apiClient.Perform(
 		ctx,
-		NewRequestParams().Post(urlPath).ReqBody(buffer).ResBody(res),
-	); err != nil {
+		client.NewParams().Post(urlPath).RequestBody(buffer),
+	)
+	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	body := &types.ResponseCreateUserForAuthenticator{}
+	json.NewDecoder(resp.Body).Decode(body)
+	if err != nil {
+		c.logger.Errorw("failure to unmarshal json", zap.Error(err))
+		return nil, err
+	}
+
+	return body, nil
 }

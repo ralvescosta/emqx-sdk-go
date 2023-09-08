@@ -3,15 +3,19 @@ package authentication
 import (
 	"context"
 	"fmt"
+
+	"github.com/ralvescosta/emqx-sdk-go/client"
 )
 
-func (c *Client) PutUpdateUserInAuthenticator(ctx context.Context, authenticatorID, userID string) error {
+func (c *authenticationClient) PutUpdateUserInAuthenticator(ctx context.Context, authenticatorID, userID string) error {
 	urlPath := fmt.Sprintf("api/v5/authentication/%s/users/%s", authenticatorID, userID)
 
-	if err := c.perform(
+	_, err := c.apiClient.Perform(
 		ctx,
-		NewRequestParams().Put(urlPath),
-	); err != nil {
+		client.NewParams().Put(urlPath),
+	)
+
+	if err != nil {
 		return err
 	}
 

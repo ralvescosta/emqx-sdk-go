@@ -2,4 +2,4 @@ package authentication
 
 import "context"
 
-func (c *Client) GetListUsersInAuthentication(ctx context.Context, userID string) {}
+func (c *authenticationClient) GetListUsersInAuthentication(ctx context.Context, userID string) {}

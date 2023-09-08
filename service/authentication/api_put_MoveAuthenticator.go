@@ -3,16 +3,19 @@ package authentication
 import (
 	"context"
 	"fmt"
+
+	"github.com/ralvescosta/emqx-sdk-go/client"
 )
 
-func (c *Client) PutMoveAuthenticator(ctx context.Context, authenticatorID, position string) error {
+func (c *authenticationClient) PutMoveAuthenticator(ctx context.Context, authenticatorID, position string) error {
 	urlPath := fmt.Sprintf("api/v5/authentication/%s/position/%s", authenticatorID, position)
 
-	if err := c.perform(
+	_, err := c.apiClient.Perform(
 		ctx,
-		NewRequestParams().Put(urlPath),
-	); err != nil {
+		client.NewParams().Put(urlPath),
+	)
 
+	if err != nil {
 		fmt.Printf("%v", err.Error())
 		return err
 	}
