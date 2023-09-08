@@ -2,15 +2,17 @@ package alarms
 
 import (
 	"context"
-	"net/http"
+
+	"github.com/ralvescosta/emqx-sdk-go/client"
 )
 
-func (c *Client) DeleteAllHistoricalAlarms(ctx context.Context) error {
+func (c *alarmsClient) DeleteAllHistoricalAlarms(ctx context.Context) error {
 	urlPath := "/api/v5/alarms"
 
-	body := ""
-
-	err := c.perform(ctx, urlPath, http.MethodDelete, nil, &body)
+	_, err := c.apiClient.Perform(
+		ctx,
+		client.NewParams().Delete(urlPath),
+	)
 	if err != nil {
 		return err
 	}

@@ -11,24 +11,24 @@ import (
 )
 
 type (
-	Options struct {
+	APIClientOptions struct {
 		Logger      *zap.SugaredLogger
 		Credentials credentials.CredentialsProvider
 		Endpoint    endpoint.EndpointResolver
 		HTTPClient  configs.HTTPClient
 	}
 
-	Client struct {
-		options *Options
+	APIClient struct {
+		opts *APIClientOptions
 	}
 )
 
-func New(options *Options) *Client {
-	return &Client{options}
+func New(options *APIClientOptions) *APIClient {
+	return &APIClient{options}
 }
 
-func NewFromConfig(cfg *configs.Config) *Client {
-	opts := &Options{
+func NewFromConfig(cfg *configs.Config) *APIClient {
+	opts := &APIClientOptions{
 		Logger:      cfg.Logger,
 		Credentials: cfg.Credentials,
 		Endpoint:    cfg.Endpoint,
@@ -38,10 +38,10 @@ func NewFromConfig(cfg *configs.Config) *Client {
 	return New(opts)
 }
 
-func (c *Client) Perform(ctx context.Context, params *Params) (*http.Response, error) {
-	u, err := c.options.Endpoint.ResolveEndpoint()
+func (c *APIClient) Perform(ctx context.Context, params *Params) (*http.Response, error) {
+	u, err := c.opts.Endpoint.ResolveEndpoint()
 	if err != nil {
-		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", params.path))
+		c.opts.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", params.path))
 
 		return nil, err
 	}
@@ -51,23 +51,23 @@ func (c *Client) Perform(ctx context.Context, params *Params) (*http.Response, e
 		u.RawQuery = params.queryParams.Encode()
 	}
 
-	credentials, err := c.options.Credentials.Retrieve(ctx)
+	credentials, err := c.opts.Credentials.Retrieve(ctx)
 	if err != nil {
-		c.options.Logger.Errorw("failure to retrieve the api credentials", zap.Error(err))
+		c.opts.Logger.Errorw("failure to retrieve the api credentials", zap.Error(err))
 
 		return nil, err
 	}
 
 	req, err := http.NewRequest(params.method, u.String(), params.request.body)
 	if err != nil {
-		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", params.path))
+		c.opts.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", params.path))
 
 		return nil, err
 	}
 
 	secHeader, err := credentials.Header()
 	if err != nil {
-		c.options.Logger.Errorw("failure to create http headers for authentication", zap.Error(err))
+		c.opts.Logger.Errorw("failure to create http headers for authentication", zap.Error(err))
 
 		return nil, err
 	}
@@ -75,15 +75,15 @@ func (c *Client) Perform(ctx context.Context, params *Params) (*http.Response, e
 	req.Header.Set("content-type", params.request.contentType)
 	req.Header.Set("authorization", secHeader)
 
-	resp, err := c.options.HTTPClient.Do(req)
+	resp, err := c.opts.HTTPClient.Do(req)
 	if err != nil {
-		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", params.path))
+		c.opts.Logger.Errorw("http request error", zap.Error(err), zap.String("path", params.path))
 
 		return nil, err
 	}
 
 	if resp.StatusCode >= 400 {
-		c.options.Logger.Errorw("http request error", zap.Int("statusCode", resp.StatusCode))
+		c.opts.Logger.Errorw("http request error", zap.Int("statusCode", resp.StatusCode))
 		err := NewErrorFromStatusCode(resp.StatusCode)
 
 		return nil, err

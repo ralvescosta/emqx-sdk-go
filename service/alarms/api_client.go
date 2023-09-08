@@ -2,42 +2,31 @@ package alarms
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
-	"net/http"
-	"net/url"
 
+	"github.com/ralvescosta/emqx-sdk-go/client"
 	"github.com/ralvescosta/emqx-sdk-go/configs"
-	"github.com/ralvescosta/emqx-sdk-go/credentials"
-	"github.com/ralvescosta/emqx-sdk-go/endpoint"
 	"github.com/ralvescosta/emqx-sdk-go/service/alarms/types"
 	"go.uber.org/zap"
 )
 
 type (
-	Options struct {
-		Logger      *zap.SugaredLogger
-		Credentials credentials.CredentialsProvider
-		Endpoint    endpoint.EndpointResolver
-		HTTPClient  configs.HTTPClient
-	}
-
 	AlarmsClient interface {
 		DeleteAllHistoricalAlarms(ctx context.Context) error
 		GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
 	}
 
-	Client struct {
-		options *Options
+	alarmsClient struct {
+		logger    *zap.SugaredLogger
+		apiClient *client.APIClient
 	}
 )
 
-func New(options *Options) *Client {
-	return &Client{options}
+func New(options *client.APIClientOptions) *alarmsClient {
+	return &alarmsClient{options.Logger, client.New(options)}
 }
 
-func NewFromConfig(cfg *configs.Config) *Client {
-	opts := &Options{
+func NewFromConfig(cfg *configs.Config) *alarmsClient {
+	opts := &client.APIClientOptions{
 		Logger:      cfg.Logger,
 		Credentials: cfg.Credentials,
 		Endpoint:    cfg.Endpoint,
@@ -45,59 +34,4 @@ func NewFromConfig(cfg *configs.Config) *Client {
 	}
 
 	return New(opts)
-}
-
-func (c *Client) perform(ctx context.Context, path, method string, queryParams *url.Values, resBody interface{}) error {
-	u, err := c.options.Endpoint.ResolveEndpoint()
-	if err != nil {
-		c.options.Logger.Errorw("failure to resolve endpoint", zap.Error(err), zap.String("path", path))
-		return err
-	}
-
-	u.Path = path
-	if queryParams != nil {
-		u.RawQuery = queryParams.Encode()
-	}
-
-	credentials, err := c.options.Credentials.Retrieve(ctx)
-	if err != nil {
-		c.options.Logger.Errorw("failure to retrieve the api credentials", zap.Error(err))
-		return err
-	}
-
-	req, err := http.NewRequest(method, u.String(), nil)
-	if err != nil {
-		c.options.Logger.Errorw("failure to create http request", zap.Error(err), zap.String("path", path))
-		return err
-	}
-
-	secHeader, err := credentials.Header()
-	if err != nil {
-		c.options.Logger.Errorw("failure to create http headers for authentication", zap.Error(err))
-		return err
-	}
-
-	req.Header.Set("content-type", "application/json")
-	req.Header.Set("authorization", secHeader)
-
-	resp, err := c.options.HTTPClient.Do(req)
-	if err != nil {
-		c.options.Logger.Errorw("http request error", zap.Error(err), zap.String("path", path))
-		return err
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		c.options.Logger.Errorw("http request error", zap.Int("statusCode", resp.StatusCode))
-		return errors.New(resp.Status)
-	}
-
-	json.NewDecoder(resp.Body).Decode(&resBody)
-	if err != nil {
-		c.options.Logger.Errorw("failure to unmarshal json", zap.Error(err))
-		return err
-	}
-
-	return nil
 }
