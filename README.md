@@ -1,4 +1,4 @@
-# SDK for EMQX Broker API
+# GoLang SDK for EMQX Broker API
 
 [EMQX](https://github.com/emqx/emqx) is the most scalable MQTT Broker for connect any device, at any scale, move and process your IoT data in real-time anywhere.
 
