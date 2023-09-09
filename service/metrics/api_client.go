@@ -11,12 +11,12 @@ import (
 
 type (
 	MetricsClient interface {
-		GetMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error)
-		GetStats(ctx context.Context, aggregateQueryParam bool) ([]*types.StatsResponse, error)
+		GetEMQXMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error)
+		GetEMQXStats(ctx context.Context, aggregateQueryParam bool) ([]*types.StatsResponse, error)
 		GetCurrentStatusGaugeAndRate(ctx context.Context) (*types.MonitorCurrentResponse, error)
 		GetNodeCurrentStatusGaugeAndRate(ctx context.Context, nodeParam string) (*types.MonitorCurrentNodeResponse, error)
-		GetMonitorDataOnTheNode(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error)
-		GetMonitorData(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error)
+		GetListMonitorDataOnTheNode(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error)
+		GetListMonitorData(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error)
 	}
 
 	metricsClient struct {

@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (c *metricsClient) GetMonitorData(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error) {
+func (c *metricsClient) GetListMonitorData(ctx context.Context, latestQueryParam string) ([]*types.MonitorResponse, error) {
 	if latestQueryParam == "" {
 		return nil, errors.New("latest query parameter is required")
 	}

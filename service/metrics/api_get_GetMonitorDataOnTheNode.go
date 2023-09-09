@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (c *metricsClient) GetMonitorDataOnTheNode(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error) {
+func (c *metricsClient) GetListMonitorDataOnTheNode(ctx context.Context, nodeParam, latestQueryParam string) ([]*types.MonitorNodesResponse, error) {
 	if latestQueryParam == "" {
 		return nil, errors.New("latest query parameter is required")
 	}

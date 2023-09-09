@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (c *metricsClient) GetMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error) {
+func (c *metricsClient) GetEMQXMetrics(ctx context.Context, aggregateQueryParam *bool) ([]*types.MetricsResponse, error) {
 	urlPath := "/api/v5/metrics"
 
 	query := &url.Values{}
