@@ -14,7 +14,7 @@ func GetAlarms() {
 
 	ctx := context.Background()
 
-	res, err := client.GetAlarms(ctx, 1, 50, nil)
+	res, err := client.GetListAlarms(ctx, 1, 50, nil)
 	if err != nil {
 		panic(err)
 	}

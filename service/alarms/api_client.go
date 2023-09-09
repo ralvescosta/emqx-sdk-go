@@ -11,8 +11,8 @@ import (
 
 type (
 	AlarmsClient interface {
-		DeleteAllHistoricalAlarms(ctx context.Context) error
-		GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
+		DeleteRemoveAllHistoricalAlarms(ctx context.Context) error
+		GetListAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error)
 	}
 
 	alarmsClient struct {

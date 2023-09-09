@@ -6,7 +6,7 @@ import (
 	"github.com/ralvescosta/emqx-sdk-go/client"
 )
 
-func (c *alarmsClient) DeleteAllHistoricalAlarms(ctx context.Context) error {
+func (c *alarmsClient) DeleteRemoveAllHistoricalAlarms(ctx context.Context) error {
 	urlPath := "/api/v5/alarms"
 
 	_, err := c.apiClient.Perform(

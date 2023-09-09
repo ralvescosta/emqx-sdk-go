@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (c *alarmsClient) GetAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error) {
+func (c *alarmsClient) GetListAlarms(ctx context.Context, page, limit int, activated *bool) (*types.AlarmsResponse, error) {
 	if limit == 0 || page == 0 {
 		return nil, errors.New("limit and page must be grater than 0")
 	}
